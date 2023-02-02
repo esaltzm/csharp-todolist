@@ -23,8 +23,19 @@ namespace todo_list.Controllers
         [HttpPost]
         public IActionResult AddTask(Models.Task task)
         {
-            toDoList.AddTask(task);
-            return Ok();
+            return Ok(toDoList.AddTask(task));
         }
+
+        [HttpDelete]
+        public IActionResult RemoveTask(Models.Task task)
+        {
+            return Ok(toDoList.RemoveTask(task));
+        }
+
+        //[HttpPut]
+        //public IActionResult EditTask(int ID, String N)
+        //{
+        //    return Ok(toDoList.EditTask(task));
+        //}
     }
 }
