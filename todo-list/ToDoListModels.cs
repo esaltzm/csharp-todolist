@@ -7,6 +7,7 @@ public class Task
 {
     [Required]
     public string Description { get; set; } = "";
+    public int ID { get; set; }
 }
 
 public class ToDoList
@@ -27,10 +28,6 @@ public class ToDoList
         {
             Console.WriteLine(e);
         }
-        if(tasks == null)
-        {
-            tasks = new List<Task>();
-        }
     }
 
     private void SaveTaskList()
@@ -41,7 +38,12 @@ public class ToDoList
 
     public void AddTask(Task task)
     {
-        tasks?.Add(task);
+        if (tasks == null)
+        {
+            tasks = new List<Task>();
+        }
+        task.ID = tasks.Count + 1;
+        tasks.Add(task);
         SaveTaskList();
     }
 
