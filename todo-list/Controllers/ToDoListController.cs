@@ -35,7 +35,7 @@ namespace todo_list.Controllers
         }
 
         [HttpDelete]
-        [Route("todolist/clear")]
+        [Route("/todolist/clear")]
         public IActionResult ClearTasks()
         {
             toDoList.ClearTasks();
