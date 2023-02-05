@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using todo_list.Models;
 
 namespace todo_list.Controllers
@@ -21,10 +23,23 @@ namespace todo_list.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddTask(Models.Task task)
+        public IActionResult AddTask([FromBody] Models.Task task)
         {
-            return Ok(toDoList.AddTask(task));
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = toDoList.AddTask(task);
+            if (result)
+            {
+                Console.WriteLine("Created task successfully");
+                return CreatedAtAction(nameof(AddTask), task);
+            }
+
+            return BadRequest("Could not add task to the list");
         }
+
 
         [HttpDelete]
         public IActionResult RemoveTask(Models.Task task)

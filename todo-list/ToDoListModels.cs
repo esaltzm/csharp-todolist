@@ -1,11 +1,12 @@
-﻿using System.Text.Json;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace todo_list.Models;
 
 public class Task
 {
+    [Required]
     public string Description { get; set; } = "";
-    public readonly int ID;
 }
 
 public class ToDoList
@@ -34,16 +35,15 @@ public class ToDoList
 
     private void SaveTaskList()
     {
+        Console.WriteLine($"New task list: {JsonSerializer.Serialize<List<Models.Task>>(tasks)}");
         File.WriteAllText(JSONFilePath, JsonSerializer.Serialize<List<Task>>(tasks));
     }
 
-    public String AddTask(Task task)
+    public bool AddTask(Task task)
     {
-        Console.WriteLine("1 :", JsonSerializer.Serialize<List<Task>>(tasks));
         tasks?.Add(task);
         SaveTaskList();
-        Console.WriteLine("2 :", JsonSerializer.Serialize<List<Task>>(tasks));
-        return $"You added '{task.Description}' to the list";
+        return true;
     }
 
     public String RemoveTask(Task task)
