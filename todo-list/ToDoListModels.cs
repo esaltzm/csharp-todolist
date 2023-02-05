@@ -39,11 +39,10 @@ public class ToDoList
         File.WriteAllText(JSONFilePath, JsonSerializer.Serialize<List<Task>>(tasks));
     }
 
-    public bool AddTask(Task task)
+    public void AddTask(Task task)
     {
         tasks?.Add(task);
         SaveTaskList();
-        return true;
     }
 
     public String RemoveTask(Task task)

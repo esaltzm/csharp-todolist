@@ -30,14 +30,8 @@ namespace todo_list.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = toDoList.AddTask(task);
-            if (result)
-            {
-                Console.WriteLine("Created task successfully");
-                return CreatedAtAction(nameof(AddTask), task);
-            }
-
-            return BadRequest("Could not add task to the list");
+            toDoList.AddTask(task);
+            return CreatedAtAction(nameof(AddTask), task);
         }
 
 
