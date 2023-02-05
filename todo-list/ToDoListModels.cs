@@ -52,6 +52,12 @@ public class ToDoList
         return $"You removed '{task.Description} from the list";
     }
 
+    public void ClearTasks()
+    {
+        tasks = new List<Task>();
+        SaveTaskList();
+    }
+
     //public String EditTask(int ID, String NewDescription)
     //{
     //    var TaskToEdit = Tasks.Find(task => task.ID == ID);

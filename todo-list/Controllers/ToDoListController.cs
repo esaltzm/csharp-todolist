@@ -34,6 +34,13 @@ namespace todo_list.Controllers
             return CreatedAtAction(nameof(AddTask), task);
         }
 
+        [HttpDelete]
+        [Route("todolist/clear")]
+        public IActionResult ClearTasks()
+        {
+            toDoList.ClearTasks();
+            return Ok();
+        }
 
         [HttpDelete]
         public IActionResult RemoveTask(Models.Task task)
