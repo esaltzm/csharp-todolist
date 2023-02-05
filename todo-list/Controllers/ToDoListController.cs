@@ -29,8 +29,18 @@ namespace todo_list.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            toDoList.AddTask(task);
+            try
+            {
+                if (string.IsNullOrWhiteSpace(task.Description))
+                {
+                    throw new ArgumentException("Description cannot be empty or null.");
+                }
+                toDoList.AddTask(task);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
             return CreatedAtAction(nameof(AddTask), task);
         }
 
@@ -43,9 +53,11 @@ namespace todo_list.Controllers
         }
 
         [HttpDelete]
-        public IActionResult RemoveTask(Models.Task task)
+        [Route("{id}")]
+        public IActionResult DeleteTask(int id)
         {
-            return Ok(toDoList.RemoveTask(task));
+            toDoList.RemoveTask(id);
+            return Ok();
         }
 
         //[HttpPut]

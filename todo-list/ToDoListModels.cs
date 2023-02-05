@@ -5,9 +5,14 @@ namespace todo_list.Models;
 
 public class Task
 {
-    [Required]
-    public string Description { get; set; } = "";
     public int ID { get; set; }
+    public string Description { get; set; }
+
+    public Task(int id, string description)
+    {
+        ID = id;
+        Description = description;
+    }
 }
 
 public class ToDoList
@@ -24,34 +29,47 @@ public class ToDoList
                 string json = r.ReadToEnd();
                 tasks = JsonSerializer.Deserialize<List<Task>>(json);
             }
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             Console.WriteLine(e);
         }
     }
 
-    private void SaveTaskList()
-    {
-        Console.WriteLine($"New task list: {JsonSerializer.Serialize<List<Models.Task>>(tasks)}");
-        File.WriteAllText(JSONFilePath, JsonSerializer.Serialize<List<Task>>(tasks));
-    }
 
-    public void AddTask(Task task)
+    private void SaveTaskList()
     {
         if (tasks == null)
         {
             tasks = new List<Task>();
         }
-        task.ID = tasks.Count + 1;
-        tasks.Add(task);
-        SaveTaskList();
+        File.WriteAllText(JSONFilePath, JsonSerializer.Serialize<List<Task>>(tasks));
     }
 
-    public String RemoveTask(Task task)
+    public void AddTask(Task task)
     {
-        tasks?.Remove(task);
-        SaveTaskList();
-        return $"You removed '{task.Description} from the list";
+        try
+        {
+            if (tasks == null)
+            {
+                tasks = new List<Task>();
+            }
+            task.ID = tasks.Count + 1;
+            tasks.Add(task);
+            SaveTaskList();
+        } catch(ArgumentException e)
+        {
+            throw e;
+        }
+    }
+
+    public void RemoveTask(int ID)
+    {
+        if (tasks != null)
+        {
+            tasks.RemoveAll(task => task.ID == ID);
+            SaveTaskList();
+        }
     }
 
     public void ClearTasks()
@@ -76,6 +94,10 @@ public class ToDoList
 
     public List<Task> GetTasks()
     {
+        if (tasks == null)
+        {
+            tasks = new List<Task>();
+        }
         return tasks;
     }
 }
