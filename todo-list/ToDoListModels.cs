@@ -67,10 +67,18 @@ public class ToDoList
     {
         if (tasks != null)
         {
-            tasks.RemoveAll(task => task.ID == ID);
+            var taskToDelete = tasks.Find(task => task.ID == ID);
+
+            if (taskToDelete == null)
+            {
+                throw new KeyNotFoundException("Task ID not found");
+            }
+
+            tasks.Remove(taskToDelete);
             SaveTaskList();
         }
     }
+
 
     public void ClearTasks()
     {
@@ -80,17 +88,15 @@ public class ToDoList
 
     public void EditTask(int ID, String NewDescription)
     {
-        try
+        if (tasks != null)
         {
-            if (tasks != null)
+            var taskToEdit = tasks.Find(task => task.ID == ID);
+            if (taskToEdit == null)
             {
-                var taskToEdit = tasks.Find(task => task.ID == ID);
-                taskToEdit.Description = NewDescription;
-                SaveTaskList();
+                throw new KeyNotFoundException("Task ID not found");
             }
-        } catch(NullReferenceException e)
-        {
-            throw e;
+            taskToEdit.Description = NewDescription;
+            SaveTaskList();
         }
     }
 

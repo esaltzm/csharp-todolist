@@ -56,8 +56,15 @@ namespace todo_list.Controllers
         [Route("/todolist/delete/{id}")]
         public IActionResult DeleteTask(int ID)
         {
-            toDoList.DeleteTask(ID);
-            return Ok();
+            try
+            {
+                toDoList.DeleteTask(ID);
+                return Ok();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound("Task ID not found");
+            }
         }
 
         [HttpPut]
@@ -74,9 +81,9 @@ namespace todo_list.Controllers
                 toDoList.EditTask(id, NewDescription);
                 return Ok();
             }
-            catch (NullReferenceException)
+            catch (KeyNotFoundException)
             {
-                return BadRequest();
+                return NotFound("Task ID not found");
             }
         }
     }
