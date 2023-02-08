@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "TpzznmH4gmPgwnLpy8Q0gbaGtPpjoyRdcfh4JuZXa7TZMagFYjHvW1qEXbH9NgfhJe+qFg2iecOeg7VLQs11hA==",
+  "dgSpecHash": "wjm+T+z1WOG/yDuMxex0/haXVcTLZTmWhCPFUI3ukPlqstR0T1l/pohK6WEchYyshuwquv8JFwEqQ//NjMdL3A==",
   "success": true,
   "projectFilePath": "/Users/elijahsaltzman/projects/todo-list/todo-list/todo-list.csproj",
   "expectedPackageFiles": [
@@ -17,6 +17,7 @@
     "/Users/elijahsaltzman/.nuget/packages/microsoft.extensions.logging.abstractions/7.0.0/microsoft.extensions.logging.abstractions.7.0.0.nupkg.sha512",
     "/Users/elijahsaltzman/.nuget/packages/microsoft.extensions.options/7.0.0/microsoft.extensions.options.7.0.0.nupkg.sha512",
     "/Users/elijahsaltzman/.nuget/packages/microsoft.extensions.primitives/7.0.0/microsoft.extensions.primitives.7.0.0.nupkg.sha512",
+    "/Users/elijahsaltzman/.nuget/packages/newtonsoft.json/13.0.2/newtonsoft.json.13.0.2.nupkg.sha512",
     "/Users/elijahsaltzman/.nuget/packages/sqlitepclraw.bundle_e_sqlite3/2.1.2/sqlitepclraw.bundle_e_sqlite3.2.1.2.nupkg.sha512",
     "/Users/elijahsaltzman/.nuget/packages/sqlitepclraw.core/2.1.2/sqlitepclraw.core.2.1.2.nupkg.sha512",
     "/Users/elijahsaltzman/.nuget/packages/sqlitepclraw.lib.e_sqlite3/2.1.2/sqlitepclraw.lib.e_sqlite3.2.1.2.nupkg.sha512",

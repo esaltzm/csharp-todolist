@@ -53,17 +53,31 @@ namespace todo_list.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
-        public IActionResult DeleteTask(int id)
+        [Route("/todolist/delete/{id}")]
+        public IActionResult DeleteTask(int ID)
         {
-            toDoList.RemoveTask(id);
+            toDoList.DeleteTask(ID);
             return Ok();
         }
 
-        //[HttpPut]
-        //public IActionResult EditTask(int ID, String N)
-        //{
-        //    return Ok(toDoList.EditTask(task));
-        //}
+        [HttpPut]
+        [Route("/todolist/edit/{id}")]
+        public IActionResult EditTask([FromRoute] int id, [FromBody] string NewDescription)
+        {
+            if (string.IsNullOrEmpty(NewDescription))
+            {
+                return BadRequest("The NewDescription field is required.");
+            }
+
+            try
+            {
+                toDoList.EditTask(id, NewDescription);
+                return Ok();
+            }
+            catch (NullReferenceException)
+            {
+                return BadRequest();
+            }
+        }
     }
 }

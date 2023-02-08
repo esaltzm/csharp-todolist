@@ -53,3 +53,4 @@
 /Users/elijahsaltzman/projects/todo-list/todo-list/bin/Debug/net7.0/runtimes/win-x64/native/e_sqlite3.dll
 /Users/elijahsaltzman/projects/todo-list/todo-list/bin/Debug/net7.0/runtimes/win-x86/native/e_sqlite3.dll
 /Users/elijahsaltzman/projects/todo-list/todo-list/obj/Debug/net7.0/todo-list.csproj.CopyComplete
+/Users/elijahsaltzman/projects/todo-list/todo-list/bin/Debug/net7.0/Newtonsoft.Json.dll

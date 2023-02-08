@@ -63,7 +63,7 @@ public class ToDoList
         }
     }
 
-    public void RemoveTask(int ID)
+    public void DeleteTask(int ID)
     {
         if (tasks != null)
         {
@@ -78,19 +78,21 @@ public class ToDoList
         SaveTaskList();
     }
 
-    //public String EditTask(int ID, String NewDescription)
-    //{
-    //    var TaskToEdit = Tasks.Find(task => task.ID == ID);
-    //    if (TaskToEdit != null)
-    //    {
-    //        var OldDescription = TaskToEdit.Description;
-    //        TaskToEdit.Description = NewDescription;
-    //        return $"You changed {OldDescription} to {NewDescription}";
-    //    } else
-    //    {
-    //        return $"Task {ID} not found";
-    //    }
-    //}
+    public void EditTask(int ID, String NewDescription)
+    {
+        try
+        {
+            if (tasks != null)
+            {
+                var taskToEdit = tasks.Find(task => task.ID == ID);
+                taskToEdit.Description = NewDescription;
+                SaveTaskList();
+            }
+        } catch(NullReferenceException e)
+        {
+            throw e;
+        }
+    }
 
     public List<Task> GetTasks()
     {
