@@ -4,10 +4,6 @@ using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-
-// old path /usr/local/share/dotnet/dotnet
-
-
 namespace todo_list.Models;
 
 public class ToDoItem
@@ -39,7 +35,7 @@ public class ToDoList
 
             using (var command = new SQLiteCommand(connection))
             {
-                command.CommandText = "CREATE TABLE IF NOT EXISTS Tasks (ID INTEGER PRIMARY KEY AUTOINCREMENT, Description TEXT NOT NULL)";
+                command.CommandText = "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT NOT NULL)";
                 command.ExecuteNonQuery();
             }
         }
@@ -54,7 +50,7 @@ public class ToDoList
 
             using (var command = new SQLiteCommand(connection))
             {
-                command.CommandText = "SELECT * FROM Tasks";
+                command.CommandText = "SELECT * FROM tasks";
                 using (var reader = await command.ExecuteReaderAsync())
                 {
                     if (reader.HasRows)
@@ -79,8 +75,8 @@ public class ToDoList
 
             using (var command = new SQLiteCommand(connection))
             {
-                command.CommandText = "INSERT INTO Tasks (Description) VALUES (@Description)";
-                command.Parameters.AddWithValue("@Description", description);
+                command.CommandText = "INSERT INTO tasks (description) VALUES (@description)";
+                command.Parameters.AddWithValue("@description", description);
                 await command.ExecuteNonQueryAsync();
                 int id = (int)connection.LastInsertRowId;
                 return new ToDoItem(id, description);
@@ -95,7 +91,7 @@ public class ToDoList
             await connection.OpenAsync();
             using (var command = new SQLiteCommand(connection))
             {
-                command.CommandText = "DELETE FROM Tasks WHERE id = @id RETURNING *";
+                command.CommandText = "DELETE FROM tasks WHERE id = @id RETURNING *";
                 command.Parameters.AddWithValue("@id", id);
                 using (var reader = await command.ExecuteReaderAsync())
                 {
@@ -113,8 +109,6 @@ public class ToDoList
         }
     }
 
-
-
     public async Task DeleteAllItems()
     {
         using (var connection = new SQLiteConnection(_connectionString))
@@ -122,35 +116,38 @@ public class ToDoList
             await connection.OpenAsync();
             using (var command = new SQLiteCommand(connection))
             {
-                command.CommandText = "DELETE FROM Tasks";
+                command.CommandText = "DELETE FROM tasks";
                 await command.ExecuteNonQueryAsync();
-                command.CommandText = "DELETE from sqlite_sequence where name = 'Tasks'";
+                command.CommandText = "DELETE FROM sqlite_sequence WHERE name = 'tasks'";
                 await command.ExecuteNonQueryAsync();
             }
         }
     }
 
-    //public void EditTask(int ID, String NewDescription)
-    //{
-    //    if (tasks != null)
-    //    {
-    //        var taskToEdit = tasks.Find(task => task.ID == ID);
-    //        if (taskToEdit == null)
-    //        {
-    //            throw new KeyNotFoundException("Task ID not found");
-    //        }
-    //        taskToEdit.Description = NewDescription;
-    //        SaveTaskList();
-    //    }
-    //}
-
-    //public List<Task> GetTasks()
-    //{
-    //    if (tasks == null)
-    //    {
-    //        tasks = new List<Task>();
-    //    }
-    //    return tasks;
-    //}
+    public async Task<ToDoItem> UpdateItemByID (int id, String newDescription)
+    {
+        using (var connection = new SQLiteConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            using (var command = new SQLiteCommand(connection))
+            {
+                command.CommandText = "UPDATE tasks SET description = @newDescription WHERE id = @id RETURNING *";
+                command.Parameters.AddWithValue("@id", id);
+                command.Parameters.AddWithValue("@newDescription", newDescription);
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        return new ToDoItem(reader.GetInt32(0), reader.GetString(1));
+                    }
+                    else
+                    {
+                        throw new Exception("Task ID not found");
+                    }
+                }
+            }
+        }
+    }
 }
 

@@ -24,6 +24,7 @@ namespace todo_list.Controllers
         }
 
         [HttpPost]
+        [Route("/todolist/add")]
         public async Task<IActionResult> AddItem([FromBody] string description)
         {
             if (string.IsNullOrEmpty(description))
@@ -48,7 +49,7 @@ namespace todo_list.Controllers
 
         [HttpDelete]
         [Route("/todolist/delete/{id}")]
-        public async Task<IActionResult> DeleteItemByID(int id)
+        public async Task<IActionResult> DeleteItemByID([FromRoute] int id)
         {
             try
             {
@@ -65,25 +66,27 @@ namespace todo_list.Controllers
             }
         }
 
-
-        //[HttpPut]
-        //[Route("/todolist/edit/{id}")]
-        //public IActionResult EditTask([FromRoute] int id, [FromBody] string NewDescription)
-        //{
-        //    if (string.IsNullOrEmpty(NewDescription))
-        //    {
-        //        return BadRequest("The NewDescription field is required.");
-        //    }
-
-        //    try
-        //    {
-        //        toDoList.EditTask(id, NewDescription);
-        //        return Ok();
-        //    }
-        //    catch (KeyNotFoundException)
-        //    {
-        //        return NotFound("Task ID not found");
-        //    }
-        //}
+        [HttpPut]
+        [Route("/todolist/edit/{id}")]
+        public async Task<IActionResult> UpdateItemByID ([FromRoute] int id, [FromBody] string newDescription)
+        {
+            if (string.IsNullOrEmpty(newDescription))
+            {
+                return BadRequest("Description field required");
+            }
+            try
+            {
+                Models.ToDoItem updatedItem = await toDoList.UpdateItemByID(id, newDescription);
+                return Ok(updatedItem);
+            }
+            catch (Exception ex) when (ex.Message == "Task ID not found")
+            {
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }
