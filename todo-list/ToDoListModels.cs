@@ -72,7 +72,6 @@ public class ToDoList
         return toDoListItems;
     }
 
-
     public async Task<ToDoItem> AddItem(string description)
     {
         using (var connection = new SQLiteConnection(_connectionString))
@@ -90,10 +89,32 @@ public class ToDoList
         }
     }
 
-    public void DeleteTask(int ID)
+    public async Task<ToDoItem> DeleteItem(int id)
     {
-        
+        using (var connection = new SQLiteConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            using (var command = new SQLiteCommand(connection))
+            {
+                command.CommandText = "DELETE FROM Tasks WHERE id = @id RETURNING *";
+                command.Parameters.AddWithValue("@id", id);
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        return new ToDoItem(reader.GetInt32(0), reader.GetString(1));
+                    }
+                    else
+                    {
+                        throw new Exception("Task ID not found");
+                    }
+                }
+            }
+        }
     }
+
 
 
     //public void ClearTasks()

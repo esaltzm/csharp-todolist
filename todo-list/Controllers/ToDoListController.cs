@@ -31,8 +31,8 @@ namespace todo_list.Controllers
                 return BadRequest("The Description field is required");
             }
 
-            Models.ToDoItem insertedTask = await toDoList.AddItem(description);
-            int id = insertedTask.id;
+            Models.ToDoItem insertedItem = await toDoList.AddItem(description);
+            int id = insertedItem.id;
 
             return Created($"/tasks/{id}", new { id = id, description = description });
         }
@@ -46,20 +46,25 @@ namespace todo_list.Controllers
         //    return Ok();
         //}
 
-        //[HttpDelete]
-        //[Route("/todolist/delete/{id}")]
-        //public IActionResult DeleteTask(int ID)
-        //{
-        //    try
-        //    {
-        //        toDoList.DeleteTask(ID);
-        //        return Ok();
-        //    }
-        //    catch (KeyNotFoundException)
-        //    {
-        //        return NotFound("Task ID not found");
-        //    }
-        //}
+        [HttpDelete]
+        [Route("/todolist/delete/{id}")]
+        public async Task<IActionResult> DeleteItem(int id)
+        {
+            try
+            {
+                Models.ToDoItem deletedItem = await toDoList.DeleteItem(id);
+                return NoContent();
+            }
+            catch (Exception ex) when (ex.Message == "Task ID not found")
+            {
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
 
         //[HttpPut]
         //[Route("/todolist/edit/{id}")]
