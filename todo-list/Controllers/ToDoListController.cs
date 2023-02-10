@@ -17,9 +17,9 @@ namespace todo_list.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTasks()
+        public async Task<IActionResult> GetAllItems()
         {
-            List <Models.ToDoItem> taskList = await toDoList.GetTasks();
+            List <Models.ToDoItem> taskList = await toDoList.GetAllItems();
             return Ok(taskList);
         }
 
@@ -28,7 +28,7 @@ namespace todo_list.Controllers
         {
             if (string.IsNullOrEmpty(description))
             {
-                return BadRequest("The Description field is required");
+                return BadRequest("Description field required");
             }
 
             Models.ToDoItem insertedItem = await toDoList.AddItem(description);
@@ -38,21 +38,21 @@ namespace todo_list.Controllers
         }
 
 
-        //[HttpDelete]
-        //[Route("/todolist/clear")]
-        //public IActionResult ClearTasks()
-        //{
-        //    toDoList.ClearTasks();
-        //    return Ok();
-        //}
+        [HttpDelete]
+        [Route("/todolist/delete/all")]
+        public async Task<IActionResult> DeleteAllItems()
+        {
+            await toDoList.DeleteAllItems();
+            return Ok();
+        }
 
         [HttpDelete]
         [Route("/todolist/delete/{id}")]
-        public async Task<IActionResult> DeleteItem(int id)
+        public async Task<IActionResult> DeleteItemByID(int id)
         {
             try
             {
-                Models.ToDoItem deletedItem = await toDoList.DeleteItem(id);
+                Models.ToDoItem deletedItem = await toDoList.DeleteItemByID(id);
                 return NoContent();
             }
             catch (Exception ex) when (ex.Message == "Task ID not found")

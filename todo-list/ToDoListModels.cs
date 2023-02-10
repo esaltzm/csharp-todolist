@@ -45,7 +45,7 @@ public class ToDoList
         }
     }
 
-    public async Task<List<ToDoItem>> GetTasks()
+    public async Task<List<ToDoItem>> GetAllItems()
     {
         var toDoListItems = new List<ToDoItem>();
         using (var connection = new SQLiteConnection(_connectionString))
@@ -68,7 +68,6 @@ public class ToDoList
                 }
             }
         }
-
         return toDoListItems;
     }
 
@@ -89,12 +88,11 @@ public class ToDoList
         }
     }
 
-    public async Task<ToDoItem> DeleteItem(int id)
+    public async Task<ToDoItem> DeleteItemByID(int id)
     {
         using (var connection = new SQLiteConnection(_connectionString))
         {
             await connection.OpenAsync();
-
             using (var command = new SQLiteCommand(connection))
             {
                 command.CommandText = "DELETE FROM Tasks WHERE id = @id RETURNING *";
@@ -117,11 +115,20 @@ public class ToDoList
 
 
 
-    //public void ClearTasks()
-    //{
-    //    tasks = new List<Task>();
-    //    SaveTaskList();
-    //}
+    public async Task DeleteAllItems()
+    {
+        using (var connection = new SQLiteConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            using (var command = new SQLiteCommand(connection))
+            {
+                command.CommandText = "DELETE FROM Tasks";
+                await command.ExecuteNonQueryAsync();
+                command.CommandText = "DELETE from sqlite_sequence where name = 'Tasks'";
+                await command.ExecuteNonQueryAsync();
+            }
+        }
+    }
 
     //public void EditTask(int ID, String NewDescription)
     //{
