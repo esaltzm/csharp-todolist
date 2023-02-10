@@ -23,68 +23,61 @@ namespace todo_list.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddTask([FromBody] Models.Task task)
+        public async Task<IActionResult> AddTask([FromBody] string description)
         {
-            if (!ModelState.IsValid)
+            if (string.IsNullOrEmpty(description))
             {
-                return BadRequest(ModelState);
-            }
-            try
-            {
-                if (string.IsNullOrWhiteSpace(task.Description))
-                {
-                    throw new ArgumentException("Description cannot be empty or null.");
-                }
-                toDoList.AddTask(task);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-            return CreatedAtAction(nameof(AddTask), task);
-        }
-
-        [HttpDelete]
-        [Route("/todolist/clear")]
-        public IActionResult ClearTasks()
-        {
-            toDoList.ClearTasks();
-            return Ok();
-        }
-
-        [HttpDelete]
-        [Route("/todolist/delete/{id}")]
-        public IActionResult DeleteTask(int ID)
-        {
-            try
-            {
-                toDoList.DeleteTask(ID);
-                return Ok();
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound("Task ID not found");
-            }
-        }
-
-        [HttpPut]
-        [Route("/todolist/edit/{id}")]
-        public IActionResult EditTask([FromRoute] int id, [FromBody] string NewDescription)
-        {
-            if (string.IsNullOrEmpty(NewDescription))
-            {
-                return BadRequest("The NewDescription field is required.");
+                return BadRequest("The Description field is required");
             }
 
-            try
-            {
-                toDoList.EditTask(id, NewDescription);
-                return Ok();
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound("Task ID not found");
-            }
+            Models.ToDoItem insertedTask = await toDoList.AddItem(description);
+            int id = insertedTask.id;
+
+            return Created($"/tasks/{id}", new { id = id, description = description });
         }
+
+
+        //[HttpDelete]
+        //[Route("/todolist/clear")]
+        //public IActionResult ClearTasks()
+        //{
+        //    toDoList.ClearTasks();
+        //    return Ok();
+        //}
+
+        //[HttpDelete]
+        //[Route("/todolist/delete/{id}")]
+        //public IActionResult DeleteTask(int ID)
+        //{
+        //    try
+        //    {
+        //        toDoList.DeleteTask(ID);
+        //        return Ok();
+        //    }
+        //    catch (KeyNotFoundException)
+        //    {
+        //        return NotFound("Task ID not found");
+        //    }
+        //}
+
+        //[HttpPut]
+        //[Route("/todolist/edit/{id}")]
+        //public IActionResult EditTask([FromRoute] int id, [FromBody] string NewDescription)
+        //{
+        //    if (string.IsNullOrEmpty(NewDescription))
+        //    {
+        //        return BadRequest("The NewDescription field is required.");
+        //    }
+
+        //    try
+        //    {
+        //        toDoList.EditTask(id, NewDescription);
+        //        return Ok();
+        //    }
+        //    catch (KeyNotFoundException)
+        //    {
+        //        return NotFound("Task ID not found");
+        //    }
+        //}
     }
 }

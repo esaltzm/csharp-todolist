@@ -12,6 +12,9 @@
     <None Remove="Controllers\" />
     <None Remove="Microsoft.EntityFrameworkCore" />
     <None Remove="Newtonsoft.Json" />
+    <None Remove="Microsoft.Data.Sqlite.Core" />
+    <None Remove="System.Data.SQLite" />
+    <None Remove="System.Data.SQLite.Core" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -20,5 +23,8 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.2" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.117" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.117" />
   </ItemGroup>
 </Project>
