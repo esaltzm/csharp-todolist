@@ -24,25 +24,7 @@ public class ToDoItem
 
 public class ToDoList
 {
-    //private String JSONFilePath = "/tmp/list.json";
-    //private List<Task>? tasks = null;
     private readonly string _connectionString = "Data Source=todo.db; Version=3;";
-
-    //public ToDoList()
-    //{
-    //    try
-    //    {
-    //        using (StreamReader r = new StreamReader(JSONFilePath))
-    //        {
-    //            string json = r.ReadToEnd();
-    //            tasks = JsonSerializer.Deserialize<List<Task>>(json);
-    //        }
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        Console.WriteLine(e);
-    //    }
-    //}
 
     public ToDoList()
     {
@@ -63,52 +45,33 @@ public class ToDoList
         }
     }
 
-    public List<ToDoItem> GetTasks()
+    public async Task<List<ToDoItem>> GetTasks()
     {
         var toDoListItems = new List<ToDoItem>();
-
-        var connection = new SQLiteConnection(_connectionString);
-        connection.Open();
-
-        var command = new SQLiteCommand(connection);
-        command.CommandText = "SELECT * FROM Tasks";
-        var reader = command.ExecuteReader();
-        if (reader.HasRows)
+        using (var connection = new SQLiteConnection(_connectionString))
         {
-            while (reader.Read())
+            await connection.OpenAsync();
+
+            using (var command = new SQLiteCommand(connection))
             {
-                var item = new ToDoItem(reader.GetInt32(0), reader.GetString(1));
-                toDoListItems.Add(item);
+                command.CommandText = "SELECT * FROM Tasks";
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            var item = new ToDoItem(reader.GetInt32(0), reader.GetString(1));
+                            toDoListItems.Add(item);
+                        }
+                    }
+                }
             }
         }
+
         return toDoListItems;
     }
 
-    //private void SaveTaskList()
-    //{
-    //    if (tasks == null)
-    //    {
-    //        tasks = new List<Task>();
-    //    }
-    //    File.WriteAllText(JSONFilePath, JsonSerializer.Serialize<List<Task>>(tasks));
-    //}
-
-    //public void AddTask(Task task)
-    //{
-    //    try
-    //    {
-    //        if (tasks == null)
-    //        {
-    //            tasks = new List<Task>();
-    //        }
-    //        task.ID = tasks.Count + 1;
-    //        tasks.Add(task);
-    //        SaveTaskList();
-    //    } catch(ArgumentException e)
-    //    {
-    //        throw e;
-    //    }
-    //}
 
     public async Task<ToDoItem> AddItem(string description)
     {
@@ -127,21 +90,10 @@ public class ToDoList
         }
     }
 
-    //public void DeleteTask(int ID)
-    //{
-    //    if (tasks != null)
-    //    {
-    //        var taskToDelete = tasks.Find(task => task.ID == ID);
-
-    //        if (taskToDelete == null)
-    //        {
-    //            throw new KeyNotFoundException("Task ID not found");
-    //        }
-
-    //        tasks.Remove(taskToDelete);
-    //        SaveTaskList();
-    //    }
-    //}
+    public void DeleteTask(int ID)
+    {
+        
+    }
 
 
     //public void ClearTasks()

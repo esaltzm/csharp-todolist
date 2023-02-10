@@ -17,13 +17,14 @@ namespace todo_list.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> GetTasks()
         {
-            return Ok(toDoList.GetTasks());
+            List <Models.ToDoItem> taskList = await toDoList.GetTasks();
+            return Ok(taskList);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddTask([FromBody] string description)
+        public async Task<IActionResult> AddItem([FromBody] string description)
         {
             if (string.IsNullOrEmpty(description))
             {
