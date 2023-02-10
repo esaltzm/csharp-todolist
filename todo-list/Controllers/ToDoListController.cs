@@ -67,8 +67,8 @@ namespace todo_list.Controllers
         }
 
         [HttpPut]
-        [Route("/todolist/edit/{id}")]
-        public async Task<IActionResult> UpdateItemByID ([FromRoute] int id, [FromBody] string newDescription)
+        [Route("/todolist/edit/description/{id}")]
+        public async Task<IActionResult> UpdateItemDescriptionByID ([FromRoute] int id, [FromBody] string newDescription)
         {
             if (string.IsNullOrEmpty(newDescription))
             {
@@ -76,7 +76,26 @@ namespace todo_list.Controllers
             }
             try
             {
-                Models.ToDoItem updatedItem = await toDoList.UpdateItemByID(id, newDescription);
+                Models.ToDoItem updatedItem = await toDoList.UpdateItemDescriptionByID(id, newDescription);
+                return Ok(updatedItem);
+            }
+            catch (Exception ex) when (ex.Message == "Task ID not found")
+            {
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPut]
+        [Route("/todolist/edit/completed/{id}")]
+        public async Task<IActionResult> ToggleItemCompletedByID([FromRoute] int id)
+        {
+            try
+            {
+                Models.ToDoItem updatedItem = await toDoList.ToggleItemCompletedByID(id);
                 return Ok(updatedItem);
             }
             catch (Exception ex) when (ex.Message == "Task ID not found")

@@ -10,11 +10,13 @@ public class ToDoItem
 {
     public int id { get; set; }
     public string description { get; set; }
+    public bool completed { get; set; }
 
-    public ToDoItem(int _id, string _description)
+    public ToDoItem(int _id, string _description, bool _completed)
     {
         id = _id;
         description = _description;
+        completed = _completed;
     }
 }
 
@@ -35,7 +37,7 @@ public class ToDoList
 
             using (var command = new SQLiteCommand(connection))
             {
-                command.CommandText = "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT NOT NULL)";
+                command.CommandText = "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT NOT NULL, completed BOOLEAN DEFAULT 0)";
                 command.ExecuteNonQuery();
             }
         }
@@ -57,7 +59,7 @@ public class ToDoList
                     {
                         while (reader.Read())
                         {
-                            var item = new ToDoItem(reader.GetInt32(0), reader.GetString(1));
+                            var item = new ToDoItem(reader.GetInt32(0), reader.GetString(1), reader.GetBoolean(2));
                             toDoListItems.Add(item);
                         }
                     }
@@ -79,7 +81,7 @@ public class ToDoList
                 command.Parameters.AddWithValue("@description", description);
                 await command.ExecuteNonQueryAsync();
                 int id = (int)connection.LastInsertRowId;
-                return new ToDoItem(id, description);
+                return new ToDoItem(id, description, false);
             }
         }
     }
@@ -98,7 +100,7 @@ public class ToDoList
                     if (reader.HasRows)
                     {
                         reader.Read();
-                        return new ToDoItem(reader.GetInt32(0), reader.GetString(1));
+                        return new ToDoItem(reader.GetInt32(0), reader.GetString(1), reader.GetBoolean(2));
                     }
                     else
                     {
@@ -124,7 +126,7 @@ public class ToDoList
         }
     }
 
-    public async Task<ToDoItem> UpdateItemByID (int id, String newDescription)
+    public async Task<ToDoItem> UpdateItemDescriptionByID (int id, String newDescription)
     {
         using (var connection = new SQLiteConnection(_connectionString))
         {
@@ -139,7 +141,32 @@ public class ToDoList
                     if (reader.HasRows)
                     {
                         reader.Read();
-                        return new ToDoItem(reader.GetInt32(0), reader.GetString(1));
+                        return new ToDoItem(reader.GetInt32(0), reader.GetString(1), reader.GetBoolean(2));
+                    }
+                    else
+                    {
+                        throw new Exception("Task ID not found");
+                    }
+                }
+            }
+        }
+    }
+
+    public async Task<ToDoItem> ToggleItemCompletedByID(int id)
+    {
+        using (var connection = new SQLiteConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            using (var command = new SQLiteCommand(connection))
+            {
+                command.CommandText = "UPDATE tasks SET completed = NOT completed WHERE id = @id RETURNING *";
+                command.Parameters.AddWithValue("@id", id);
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        return new ToDoItem(reader.GetInt32(0), reader.GetString(1), reader.GetBoolean(2));
                     }
                     else
                     {
