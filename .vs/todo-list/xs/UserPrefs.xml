@@ -1,4 +1,5 @@
 ﻿<Properties StartupConfiguration="{8EB161EF-E09B-4A1F-AB65-647EB4F60CC0}|http">
   <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.ItemProperties.todo-list FirstBuild="True" />
+  <MonoDevelop.Ide.ItemProperties.todo-list-unit-testing FirstBuild="True" />
+  <MonoDevelop.Ide.ItemProperties.todo-list PreferredExecutionTarget="/Applications/Google Chrome.app" />
 </Properties>

@@ -35,7 +35,7 @@ namespace todo_list.Controllers
             Models.ToDoItem insertedItem = await toDoList.AddItem(description);
             int id = insertedItem.id;
 
-            return Created($"/tasks/{id}", new { id = id, description = description });
+            return Created($"/tasks/{id}", insertedItem);
         }
 
 
