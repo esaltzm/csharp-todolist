@@ -35,7 +35,6 @@ public class ToDoList
         using (var connection = new SQLiteConnection(_connectionString))
         {
             connection.Open();
-
             using (var command = new SQLiteCommand(connection))
             {
                 command.CommandText = "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT NOT NULL, completed BOOLEAN DEFAULT 0)";
@@ -50,7 +49,6 @@ public class ToDoList
         using (var connection = new SQLiteConnection(_connectionString))
         {
             await connection.OpenAsync();
-
             using (var command = new SQLiteCommand(connection))
             {
                 command.CommandText = "SELECT * FROM tasks";
@@ -75,7 +73,6 @@ public class ToDoList
         using (var connection = new SQLiteConnection(_connectionString))
         {
             await connection.OpenAsync();
-
             using (var command = new SQLiteCommand(connection))
             {
                 command.CommandText = "SELECT * FROM tasks WHERE id = @id";

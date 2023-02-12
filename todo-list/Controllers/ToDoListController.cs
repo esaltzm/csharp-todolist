@@ -18,15 +18,21 @@ namespace todo_list.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllItems()
         {
-            List <Models.ToDoItem> itemList = await toDoList.GetAllItems();
-            return Ok(itemList);
+            try
+            {
+                List<Models.ToDoItem> itemList = await toDoList.GetAllItems();
+                return Ok(itemList);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpGet]
         [Route("/todolist/{id}")]
         public async Task<IActionResult> GetItemByID([FromRoute] int id)
         {
-            Console.WriteLine(id);
             try
             {
                 Models.ToDoItem item = await toDoList.GetItemByID(id);
@@ -50,11 +56,15 @@ namespace todo_list.Controllers
             {
                 return BadRequest("Description field required");
             }
-
-            Models.ToDoItem insertedItem = await toDoList.AddItem(description);
-            int id = insertedItem.id;
-
-            return Created($"/tasks/{id}", insertedItem);
+            try
+            {
+                Models.ToDoItem insertedItem = await toDoList.AddItem(description);
+                int id = insertedItem.id;
+                return Created($"/tasks/{id}", insertedItem);
+            } catch
+            {
+                return StatusCode(500);
+            }
         }
 
 
@@ -62,8 +72,14 @@ namespace todo_list.Controllers
         [Route("/todolist/delete/all")]
         public async Task<IActionResult> DeleteAllItems()
         {
-            await toDoList.DeleteAllItems();
-            return Ok();
+            try
+            {
+                await toDoList.DeleteAllItems();
+                return Ok();
+            } catch
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpDelete]
