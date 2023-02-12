@@ -3,6 +3,7 @@ using Microsoft.Data.Sqlite;
 using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace todo_list.Models;
 
@@ -67,6 +68,32 @@ public class ToDoList
             }
         }
         return toDoListItems;
+    }
+
+    public async Task<ToDoItem> GetItemByID(int id)
+    {
+        using (var connection = new SQLiteConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            using (var command = new SQLiteCommand(connection))
+            {
+                command.CommandText = "SELECT * FROM tasks WHERE id = @id";
+                command.Parameters.AddWithValue("@id", id);
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        return new ToDoItem(reader.GetInt32(0), reader.GetString(1), reader.GetBoolean(2));
+                    }
+                    else
+                    {
+                        throw new Exception("Task ID not found");
+                    }
+                }
+            }
+        }
     }
 
     public async Task<ToDoItem> AddItem(string description)

@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using todo_list.Models;
 
@@ -19,8 +18,28 @@ namespace todo_list.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllItems()
         {
-            List <Models.ToDoItem> taskList = await toDoList.GetAllItems();
-            return Ok(taskList);
+            List <Models.ToDoItem> itemList = await toDoList.GetAllItems();
+            return Ok(itemList);
+        }
+
+        [HttpGet]
+        [Route("/todolist/{id}")]
+        public async Task<IActionResult> GetItemByID([FromRoute] int id)
+        {
+            Console.WriteLine(id);
+            try
+            {
+                Models.ToDoItem item = await toDoList.GetItemByID(id);
+                return Ok(item);
+            }
+            catch (Exception ex) when (ex.Message == "Task ID not found")
+            {
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpPost]

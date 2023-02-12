@@ -12,7 +12,7 @@ public class UnitTestModels
     private readonly string _connectionString = "Data Source=todo.db; Version=3;";
 
     [Fact]
-    public async Task GetAllItems_ShouldReturnCorrectItems()
+    public async Task GetAllItems_ReturnsCorrectItems()
     {
         // Arrange
         var toDoList = new ToDoList();
